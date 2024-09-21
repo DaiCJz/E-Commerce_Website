@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderDetail;
 import com.example.demo.model.OrderStatus;
-
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.service.CartService;
 import com.example.demo.service.OrderService;
 
 
@@ -28,6 +29,8 @@ import com.example.demo.service.OrderService;
 @RequestMapping("/api/checkout")
 public class OrderController {
     
+    @Autowired
+    CartService cartService;
     @Autowired
     OrderService orderService;
     @Autowired
@@ -53,6 +56,11 @@ public class OrderController {
             Order order = orderRepository.findByOrderId(orderId);
             order.setStatus(OrderStatus.fromValue("paid"));
             orderRepository.save(order);
+            //更新購物車狀態
+            Integer userId = order.getUser().getUserId();
+            System.out.println(userId);
+            cartService.deleteAllProduct(userId );
+
     
             //跳轉回買家中心HTML
             String redirectHtml = "<html><body>"

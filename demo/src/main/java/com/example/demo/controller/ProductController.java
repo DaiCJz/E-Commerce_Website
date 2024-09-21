@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,16 +39,26 @@ public class ProductController {
 
     // 處理關鍵字搜索的 GET 請求方法
 
-    @GetMapping("/search")
-    public Page<Product> searchProducts(
-            @RequestParam("keyword") String keyword,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        
-        // 創建分頁請求對象
-        PageRequest pageable = PageRequest.of(page, size);
-        return productService.searchProducts(keyword, pageable);
-    }
+   @GetMapping("/search")
+public Page<Product> searchProducts(
+        @RequestParam("keyword") String keyword,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size) {
+    
+    // 創建分頁請求對象
+    PageRequest pageable = PageRequest.of(page, size);
+    Page<Product> searchProducts = productService.searchProducts(keyword, pageable);
+    
+    // 過濾掉庫存為 0 的產品
+    List<Product> filteredProducts = searchProducts
+            .stream()
+            .filter(s -> s.getStock() != 0)
+            .collect(Collectors.toList());
+    
+    // 使用 PageImpl 將 List 轉換為 Page
+    return new PageImpl<>(filteredProducts, pageable, filteredProducts.size());
+}
+
        //更新產品資訊
         @PatchMapping("/updateProduct")
         public Product updateProduct(@RequestBody Product updatedProduct){

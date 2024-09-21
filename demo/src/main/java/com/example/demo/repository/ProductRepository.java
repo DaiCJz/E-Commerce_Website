@@ -48,7 +48,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             //搜索全部有id在productIds裡的商品
             @Query("SELECT p FROM Product p WHERE p.productId IN :productIds")
             List<Product>findByIdIn(@Param("productIds") List<Integer> productIds);
-       
 
 
         }

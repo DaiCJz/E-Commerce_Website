@@ -19,6 +19,8 @@ import com.example.demo.repository.CartDetailRepository;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.ProductRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CartService {
 
@@ -167,6 +169,26 @@ public class CartService {
         return ResponseEntity.ok(amount);
     }
     
+
+    //刪除購物車內的所有商品
+    @Transactional
+    public ResponseEntity<String> deleteAllProduct(int userId){
+        if(cartRepository.findByUserId(userId)!=null){
+            Cart cart = cartRepository.findByUserId(userId);
+            List<CartDetail> cartDetails = cartDetailRepository.findAllByCart(cart);
+            //購買後設定數量
+        for (CartDetail cartDetail : cartDetails) {
+            Product product = cartDetail.getProduct();
+            Integer quantity = cartDetail.getQuantity();
+            int stock = product.getStock();
+            product.setStock(stock-quantity);
+            productRepository.save(product);
+        }
+            cartDetailRepository.deleteByCart(cart);
+        }
+        return ResponseEntity.ok("delete success!");
+    }
+
 }
 
     
