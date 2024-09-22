@@ -43,10 +43,10 @@ build/
 /node_modules
 /.pnp
 .pnp.js
-src/images/
+
 src/mail
 src/HTMLpages
-src/font
+
 .vscode/
 
 
