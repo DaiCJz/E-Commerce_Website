@@ -3,15 +3,10 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-<<<<<<< HEAD
 !**/src/main/resources/application.properties
 *.jpg
 *.png
 *.svg
-=======
-.DS_Store
-
->>>>>>> cb55fac (feat:git ignore change)
 ### STS ###
 .apt_generated
 .classpath
